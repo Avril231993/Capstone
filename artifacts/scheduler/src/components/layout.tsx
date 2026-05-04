@@ -1,24 +1,25 @@
 import React from "react";
 import { Link, useLocation } from "wouter";
-import { 
-  LayoutDashboard, 
-  CalendarDays, 
-  BookOpen, 
-  Users, 
-  DoorOpen, 
-  CalendarPlus, 
-  FileBarChart, 
-  Lightbulb, 
-  AlertTriangle 
+import {
+  LayoutDashboard,
+  CalendarDays,
+  BookOpen,
+  Users,
+  DoorOpen,
+  CalendarPlus,
+  FileBarChart,
+  Lightbulb,
+  AlertTriangle,
+  CalendarCog,
 } from "lucide-react";
-import { 
-  Sidebar, 
-  SidebarContent, 
-  SidebarGroup, 
-  SidebarGroupContent, 
-  SidebarGroupLabel, 
-  SidebarMenu, 
-  SidebarMenuButton, 
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuButton,
   SidebarMenuItem,
   SidebarProvider,
   SidebarHeader
@@ -27,6 +28,7 @@ import {
 const navItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Timetable", url: "/timetable", icon: CalendarDays },
+  { title: "Schedule Builder", url: "/schedule-builder", icon: CalendarCog },
   { title: "Courses", url: "/courses", icon: BookOpen },
   { title: "Faculty", url: "/faculty", icon: Users },
   { title: "Rooms", url: "/rooms", icon: DoorOpen },

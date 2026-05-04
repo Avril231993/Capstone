@@ -179,3 +179,79 @@
     @apply font-sans antialiased bg-background text-foreground;
   }
 }
+
+@media print {
+  @page {
+    size: landscape;
+    margin: 12mm;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+    font-size: 11px;
+  }
+
+  /* Hide sidebar and non-printable controls */
+  [data-sidebar],
+  aside,
+  nav,
+  .print\:hidden {
+    display: none !important;
+  }
+
+  /* Expand main content to full width */
+  main,
+  .flex-1 {
+    padding: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  /* Force table borders to show */
+  table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+    font-size: 10px;
+  }
+
+  th, td {
+    border: 1px solid #d1d5db !important;
+    padding: 4px 6px !important;
+  }
+
+  thead tr {
+    background: #f3f4f6 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Keep colored schedule chips visible */
+  [class*="bg-blue-50"],
+  [class*="bg-green-50"],
+  [class*="bg-purple-50"],
+  [class*="bg-orange-50"],
+  [class*="bg-pink-50"],
+  [class*="bg-teal-50"],
+  [class*="bg-amber-50"],
+  [class*="bg-cyan-50"],
+  [class*="bg-rose-50"] {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Remove shadows and rounded corners */
+  .shadow,
+  .shadow-sm,
+  .shadow-md,
+  .rounded-xl,
+  .rounded-lg {
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+
+  /* Prevent page breaks inside rows */
+  tr, .card {
+    page-break-inside: avoid;
+  }
+}

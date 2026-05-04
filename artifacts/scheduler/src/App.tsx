@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Dashboard from "@/pages/dashboard";
 import Timetable from "@/pages/timetable";
+import ScheduleBuilder from "@/pages/schedule-builder";
 import Courses from "@/pages/courses";
 import Faculty from "@/pages/faculty";
 import Rooms from "@/pages/rooms";
@@ -32,6 +33,7 @@ function Router() {
         </Route>
         <Route path="/dashboard" component={Dashboard} />
         <Route path="/timetable" component={Timetable} />
+        <Route path="/schedule-builder" component={ScheduleBuilder} />
         <Route path="/courses" component={Courses} />
         <Route path="/faculty" component={Faculty} />
         <Route path="/rooms" component={Rooms} />
