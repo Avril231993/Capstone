@@ -1,22 +1,33 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Intelligent Class Scheduling and Faculty Loading System API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: courses
+    description: Course management
+  - name: faculty
+    description: Faculty management
+  - name: rooms
+    description: Room management
+  - name: timeslots
+    description: Time slot management
+  - name: schedules
+    description: Schedule management
+  - name: stats
+    description: Dashboard statistics and reports
+
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +35,627 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /courses:
+    get:
+      operationId: listCourses
+      tags: [courses]
+      summary: List all courses
+      parameters:
+        - name: department
+          in: query
+          schema:
+            type: string
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of courses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Course"
+    post:
+      operationId: createCourse
+      tags: [courses]
+      summary: Create a course
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCourseBody"
+      responses:
+        "201":
+          description: Created course
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Course"
+
+  /courses/{id}:
+    get:
+      operationId: getCourse
+      tags: [courses]
+      summary: Get a course by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Course
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Course"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      operationId: updateCourse
+      tags: [courses]
+      summary: Update a course
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCourseBody"
+      responses:
+        "200":
+          description: Updated course
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Course"
+    delete:
+      operationId: deleteCourse
+      tags: [courses]
+      summary: Delete a course
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteResponse"
+
+  /faculty:
+    get:
+      operationId: listFaculty
+      tags: [faculty]
+      summary: List all faculty members
+      parameters:
+        - name: department
+          in: query
+          schema:
+            type: string
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of faculty
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Faculty"
+    post:
+      operationId: createFaculty
+      tags: [faculty]
+      summary: Create a faculty member
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateFacultyBody"
+      responses:
+        "201":
+          description: Created faculty
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Faculty"
+
+  /faculty/{id}:
+    get:
+      operationId: getFaculty
+      tags: [faculty]
+      summary: Get a faculty member by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Faculty member
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Faculty"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      operationId: updateFaculty
+      tags: [faculty]
+      summary: Update a faculty member
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateFacultyBody"
+      responses:
+        "200":
+          description: Updated faculty
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Faculty"
+    delete:
+      operationId: deleteFaculty
+      tags: [faculty]
+      summary: Delete a faculty member
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteResponse"
+
+  /rooms:
+    get:
+      operationId: listRooms
+      tags: [rooms]
+      summary: List all rooms
+      parameters:
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [lecture, lab, computer, seminar, gym]
+        - name: minCapacity
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of rooms
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Room"
+    post:
+      operationId: createRoom
+      tags: [rooms]
+      summary: Create a room
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateRoomBody"
+      responses:
+        "201":
+          description: Created room
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Room"
+
+  /rooms/{id}:
+    get:
+      operationId: getRoom
+      tags: [rooms]
+      summary: Get a room by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Room
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Room"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      operationId: updateRoom
+      tags: [rooms]
+      summary: Update a room
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateRoomBody"
+      responses:
+        "200":
+          description: Updated room
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Room"
+    delete:
+      operationId: deleteRoom
+      tags: [rooms]
+      summary: Delete a room
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteResponse"
+
+  /timeslots:
+    get:
+      operationId: listTimeslots
+      tags: [timeslots]
+      summary: List all time slots
+      responses:
+        "200":
+          description: List of time slots
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Timeslot"
+    post:
+      operationId: createTimeslot
+      tags: [timeslots]
+      summary: Create a time slot
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTimeslotBody"
+      responses:
+        "201":
+          description: Created time slot
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Timeslot"
+
+  /timeslots/{id}:
+    delete:
+      operationId: deleteTimeslot
+      tags: [timeslots]
+      summary: Delete a time slot
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteResponse"
+
+  /schedules:
+    get:
+      operationId: listSchedules
+      tags: [schedules]
+      summary: List all schedule entries
+      parameters:
+        - name: semester
+          in: query
+          schema:
+            type: string
+        - name: academicYear
+          in: query
+          schema:
+            type: string
+        - name: facultyId
+          in: query
+          schema:
+            type: integer
+        - name: roomId
+          in: query
+          schema:
+            type: integer
+        - name: day
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of schedule entries with related data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ScheduleEntry"
+    post:
+      operationId: createSchedule
+      tags: [schedules]
+      summary: Create a schedule entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateScheduleBody"
+      responses:
+        "201":
+          description: Created schedule entry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ScheduleEntry"
+        "409":
+          description: Conflict detected
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /schedules/{id}:
+    get:
+      operationId: getSchedule
+      tags: [schedules]
+      summary: Get a schedule entry by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Schedule entry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ScheduleEntry"
+    put:
+      operationId: updateSchedule
+      tags: [schedules]
+      summary: Update a schedule entry
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateScheduleBody"
+      responses:
+        "200":
+          description: Updated schedule entry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ScheduleEntry"
+    delete:
+      operationId: deleteSchedule
+      tags: [schedules]
+      summary: Delete a schedule entry
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteResponse"
+
+  /schedules/conflicts:
+    get:
+      operationId: getConflicts
+      tags: [schedules]
+      summary: Get all scheduling conflicts
+      parameters:
+        - name: semester
+          in: query
+          schema:
+            type: string
+        - name: academicYear
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of conflicts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Conflict"
+
+  /schedules/suggestions:
+    post:
+      operationId: getAiSuggestions
+      tags: [schedules]
+      summary: Get AI-powered schedule adjustment suggestions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SuggestionsRequestBody"
+      responses:
+        "200":
+          description: AI suggestions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuggestionsResponse"
+
+  /schedules/generate:
+    post:
+      operationId: generateSchedule
+      tags: [schedules]
+      summary: Auto-generate a complete schedule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenerateScheduleBody"
+      responses:
+        "200":
+          description: Generated schedule entries
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenerateScheduleResponse"
+
+  /stats/overview:
+    get:
+      operationId: getStatsOverview
+      tags: [stats]
+      summary: Get dashboard overview statistics
+      parameters:
+        - name: semester
+          in: query
+          schema:
+            type: string
+        - name: academicYear
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Overview stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OverviewStats"
+
+  /stats/faculty-loads:
+    get:
+      operationId: getFacultyLoads
+      tags: [stats]
+      summary: Get all faculty loading reports
+      parameters:
+        - name: semester
+          in: query
+          schema:
+            type: string
+        - name: academicYear
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Faculty load reports
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FacultyLoadReport"
+
+  /stats/room-utilization:
+    get:
+      operationId: getRoomUtilization
+      tags: [stats]
+      summary: Get room utilization statistics
+      parameters:
+        - name: semester
+          in: query
+          schema:
+            type: string
+        - name: academicYear
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Room utilization stats
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RoomUtilizationReport"
+
 components:
   schemas:
     HealthStatus:
@@ -31,6 +663,485 @@ components:
       properties:
         status:
           type: string
-      required:
-        - status
+      required: [status]
 
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+      required: [error, message]
+
+    DeleteResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+      required: [success, message]
+
+    Course:
+      type: object
+      properties:
+        id:
+          type: integer
+        code:
+          type: string
+        name:
+          type: string
+        department:
+          type: string
+        units:
+          type: integer
+        section:
+          type: string
+        enrollmentCount:
+          type: integer
+        description:
+          type: string
+        createdAt:
+          type: string
+      required: [id, code, name, department, units, section, enrollmentCount, createdAt]
+
+    CreateCourseBody:
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+        department:
+          type: string
+        units:
+          type: integer
+        section:
+          type: string
+        enrollmentCount:
+          type: integer
+        description:
+          type: string
+      required: [code, name, department, units, section, enrollmentCount]
+
+    UpdateCourseBody:
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+        department:
+          type: string
+        units:
+          type: integer
+        section:
+          type: string
+        enrollmentCount:
+          type: integer
+        description:
+          type: string
+
+    Faculty:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        department:
+          type: string
+        specialization:
+          type: string
+        rank:
+          type: string
+          enum: [instructor, assistant_professor, associate_professor, professor, part_time]
+        maxUnits:
+          type: integer
+        createdAt:
+          type: string
+      required: [id, name, email, department, rank, maxUnits, createdAt]
+
+    CreateFacultyBody:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        department:
+          type: string
+        specialization:
+          type: string
+        rank:
+          type: string
+          enum: [instructor, assistant_professor, associate_professor, professor, part_time]
+        maxUnits:
+          type: integer
+      required: [name, email, department, rank, maxUnits]
+
+    UpdateFacultyBody:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        department:
+          type: string
+        specialization:
+          type: string
+        rank:
+          type: string
+          enum: [instructor, assistant_professor, associate_professor, professor, part_time]
+        maxUnits:
+          type: integer
+
+    Room:
+      type: object
+      properties:
+        id:
+          type: integer
+        roomNumber:
+          type: string
+        building:
+          type: string
+        capacity:
+          type: integer
+        type:
+          type: string
+          enum: [lecture, lab, computer, seminar, gym]
+        features:
+          type: string
+        createdAt:
+          type: string
+      required: [id, roomNumber, building, capacity, type, createdAt]
+
+    CreateRoomBody:
+      type: object
+      properties:
+        roomNumber:
+          type: string
+        building:
+          type: string
+        capacity:
+          type: integer
+        type:
+          type: string
+          enum: [lecture, lab, computer, seminar, gym]
+        features:
+          type: string
+      required: [roomNumber, building, capacity, type]
+
+    UpdateRoomBody:
+      type: object
+      properties:
+        roomNumber:
+          type: string
+        building:
+          type: string
+        capacity:
+          type: integer
+        type:
+          type: string
+          enum: [lecture, lab, computer, seminar, gym]
+        features:
+          type: string
+
+    Timeslot:
+      type: object
+      properties:
+        id:
+          type: integer
+        day:
+          type: string
+          enum: [Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
+        startTime:
+          type: string
+        endTime:
+          type: string
+        label:
+          type: string
+      required: [id, day, startTime, endTime, label]
+
+    CreateTimeslotBody:
+      type: object
+      properties:
+        day:
+          type: string
+          enum: [Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
+        startTime:
+          type: string
+        endTime:
+          type: string
+        label:
+          type: string
+      required: [day, startTime, endTime, label]
+
+    ScheduleEntry:
+      type: object
+      properties:
+        id:
+          type: integer
+        courseId:
+          type: integer
+        facultyId:
+          type: integer
+        roomId:
+          type: integer
+        timeslotId:
+          type: integer
+        semester:
+          type: string
+        academicYear:
+          type: string
+        course:
+          $ref: "#/components/schemas/Course"
+        faculty:
+          $ref: "#/components/schemas/Faculty"
+        room:
+          $ref: "#/components/schemas/Room"
+        timeslot:
+          $ref: "#/components/schemas/Timeslot"
+        createdAt:
+          type: string
+      required: [id, courseId, facultyId, roomId, timeslotId, semester, academicYear, createdAt]
+
+    CreateScheduleBody:
+      type: object
+      properties:
+        courseId:
+          type: integer
+        facultyId:
+          type: integer
+        roomId:
+          type: integer
+        timeslotId:
+          type: integer
+        semester:
+          type: string
+        academicYear:
+          type: string
+      required: [courseId, facultyId, roomId, timeslotId, semester, academicYear]
+
+    UpdateScheduleBody:
+      type: object
+      properties:
+        courseId:
+          type: integer
+        facultyId:
+          type: integer
+        roomId:
+          type: integer
+        timeslotId:
+          type: integer
+        semester:
+          type: string
+        academicYear:
+          type: string
+
+    Conflict:
+      type: object
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+          enum: [room_conflict, faculty_conflict, overload]
+        severity:
+          type: string
+          enum: [error, warning]
+        description:
+          type: string
+        affectedScheduleIds:
+          type: array
+          items:
+            type: integer
+        suggestedFix:
+          type: string
+      required: [id, type, severity, description, affectedScheduleIds]
+
+    SuggestionsRequestBody:
+      type: object
+      properties:
+        semester:
+          type: string
+        academicYear:
+          type: string
+        context:
+          type: string
+      required: [semester, academicYear]
+
+    SuggestionsResponse:
+      type: object
+      properties:
+        suggestions:
+          type: array
+          items:
+            $ref: "#/components/schemas/AiSuggestion"
+        summary:
+          type: string
+      required: [suggestions, summary]
+
+    AiSuggestion:
+      type: object
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+          enum: [reassign_room, reassign_faculty, move_timeslot, split_section, merge_section]
+        priority:
+          type: string
+          enum: [high, medium, low]
+        title:
+          type: string
+        description:
+          type: string
+        affectedScheduleId:
+          type: integer
+        proposedChanges:
+          type: string
+      required: [id, type, priority, title, description]
+
+    GenerateScheduleBody:
+      type: object
+      properties:
+        semester:
+          type: string
+        academicYear:
+          type: string
+        courseIds:
+          type: array
+          items:
+            type: integer
+        strategy:
+          type: string
+          enum: [balanced, compact, faculty_preference, room_efficiency]
+      required: [semester, academicYear, courseIds]
+
+    GenerateScheduleResponse:
+      type: object
+      properties:
+        generatedCount:
+          type: integer
+        schedules:
+          type: array
+          items:
+            $ref: "#/components/schemas/ScheduleEntry"
+        conflicts:
+          type: array
+          items:
+            $ref: "#/components/schemas/Conflict"
+        summary:
+          type: string
+      required: [generatedCount, schedules, conflicts, summary]
+
+    OverviewStats:
+      type: object
+      properties:
+        totalCourses:
+          type: integer
+        totalFaculty:
+          type: integer
+        totalRooms:
+          type: integer
+        scheduledSections:
+          type: integer
+        unscheduledSections:
+          type: integer
+        totalConflicts:
+          type: integer
+        overloadedFaculty:
+          type: integer
+        roomUtilizationRate:
+          type: number
+        facultyLoadRate:
+          type: number
+      required:
+        [
+          totalCourses,
+          totalFaculty,
+          totalRooms,
+          scheduledSections,
+          unscheduledSections,
+          totalConflicts,
+          overloadedFaculty,
+          roomUtilizationRate,
+          facultyLoadRate,
+        ]
+
+    FacultyLoadReport:
+      type: object
+      properties:
+        facultyId:
+          type: integer
+        facultyName:
+          type: string
+        department:
+          type: string
+        rank:
+          type: string
+        maxUnits:
+          type: integer
+        assignedUnits:
+          type: integer
+        loadPercentage:
+          type: number
+        status:
+          type: string
+          enum: [underloaded, normal, overloaded]
+        courses:
+          type: array
+          items:
+            type: string
+      required:
+        [
+          facultyId,
+          facultyName,
+          department,
+          rank,
+          maxUnits,
+          assignedUnits,
+          loadPercentage,
+          status,
+          courses,
+        ]
+
+    RoomUtilizationReport:
+      type: object
+      properties:
+        roomId:
+          type: integer
+        roomNumber:
+          type: string
+        building:
+          type: string
+        type:
+          type: string
+        capacity:
+          type: integer
+        scheduledSlots:
+          type: integer
+        totalSlots:
+          type: integer
+        utilizationRate:
+          type: number
+        status:
+          type: string
+          enum: [underutilized, normal, highly_utilized]
+      required:
+        [
+          roomId,
+          roomNumber,
+          building,
+          type,
+          capacity,
+          scheduledSlots,
+          totalSlots,
+          utilizationRate,
+          status,
+        ]
