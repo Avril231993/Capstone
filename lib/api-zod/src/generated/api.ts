@@ -1022,6 +1022,26 @@ export const GetOverflowSuggestionsResponse = zod.object({
       reason: zod.string(),
       yearLevel: zod.string(),
       priority: zod.enum(["high", "medium", "low"]),
+      matchedSubjects: zod
+        .array(zod.string())
+        .optional()
+        .describe(
+          "Subject codes\/names taught in the target section that align with the source section",
+        ),
+      specializations: zod
+        .array(zod.string())
+        .optional()
+        .describe("Relevant specialization areas justifying this transfer"),
+      subjectAlignment: zod
+        .string()
+        .optional()
+        .describe(
+          "Explanation of how subjects and specializations align between sections",
+        ),
+      toSectionAvailableSlots: zod
+        .number()
+        .optional()
+        .describe("Remaining slots in the target section after the transfer"),
     }),
   ),
   summary: zod.string(),

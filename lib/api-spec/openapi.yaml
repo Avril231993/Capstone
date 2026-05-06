@@ -1650,6 +1650,22 @@ components:
         priority:
           type: string
           enum: [high, medium, low]
+        matchedSubjects:
+          type: array
+          items:
+            type: string
+          description: Subject codes/names taught in the target section that align with the source section
+        specializations:
+          type: array
+          items:
+            type: string
+          description: Relevant specialization areas justifying this transfer
+        subjectAlignment:
+          type: string
+          description: Explanation of how subjects and specializations align between sections
+        toSectionAvailableSlots:
+          type: integer
+          description: Remaining slots in the target section after the transfer
       required: [fromSectionId, fromSectionName, toSectionId, toSectionName, studentsToTransfer, reason, yearLevel, priority]
 
     OverflowSuggestionsResponse:

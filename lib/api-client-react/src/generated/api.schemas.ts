@@ -473,6 +473,14 @@ export interface SectionTransferSuggestion {
   reason: string;
   yearLevel: string;
   priority: SectionTransferSuggestionPriority;
+  /** Subject codes/names taught in the target section that align with the source section */
+  matchedSubjects?: string[];
+  /** Relevant specialization areas justifying this transfer */
+  specializations?: string[];
+  /** Explanation of how subjects and specializations align between sections */
+  subjectAlignment?: string;
+  /** Remaining slots in the target section after the transfer */
+  toSectionAvailableSlots?: number;
 }
 
 export interface OverflowSuggestionsResponse {
