@@ -10,6 +10,7 @@ import schoolYearsRouter from "./school-years";
 import yearLevelsRouter from "./year-levels";
 import loiRouter from "./loi";
 import facultySpecializationsRouter from "./faculty-specializations";
+import sectionsRouter from "./sections";
 
 const router: IRouter = Router();
 
@@ -22,6 +23,7 @@ router.use(schedulesRouter);
 router.use(statsRouter);
 router.use(schoolYearsRouter);
 router.use(yearLevelsRouter);
+router.use(sectionsRouter);
 router.use(loiRouter);
 router.use(facultySpecializationsRouter);
 

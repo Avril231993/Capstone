@@ -802,6 +802,59 @@ paths:
         "204":
           description: Deleted
 
+  /sections:
+    get:
+      operationId: listSections
+      tags: [sections]
+      summary: List all sections across all year levels
+      responses:
+        "200":
+          description: All sections
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Section"
+
+  /sections/{id}:
+    put:
+      operationId: updateSection
+      tags: [sections]
+      summary: Update a section (name, capacity, enrolled count)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateSectionBody"
+      responses:
+        "200":
+          description: Updated section
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Section"
+
+  /sections/overflow-suggestions:
+    post:
+      operationId: getOverflowSuggestions
+      tags: [sections]
+      summary: Get AI suggestions for transferring students from overflowed sections
+      responses:
+        "200":
+          description: Overflow analysis and transfer suggestions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OverflowSuggestionsResponse"
+
   /faculty/{id}/specializations:
     get:
       operationId: listFacultySpecializations
@@ -1555,11 +1608,66 @@ components:
           type: integer
         capacity:
           type: integer
+        enrolledCount:
+          type: integer
         adviserId:
           type: integer
         createdAt:
           type: string
-      required: [id, name, yearLevelId, capacity, createdAt]
+        updatedAt:
+          type: string
+      required: [id, name, yearLevelId, capacity, enrolledCount, createdAt]
+
+    UpdateSectionBody:
+      type: object
+      properties:
+        name:
+          type: string
+        capacity:
+          type: integer
+        enrolledCount:
+          type: integer
+        adviserId:
+          type: integer
+
+    SectionTransferSuggestion:
+      type: object
+      properties:
+        fromSectionId:
+          type: integer
+        fromSectionName:
+          type: string
+        toSectionId:
+          type: integer
+        toSectionName:
+          type: string
+        studentsToTransfer:
+          type: integer
+        reason:
+          type: string
+        yearLevel:
+          type: string
+        priority:
+          type: string
+          enum: [high, medium, low]
+      required: [fromSectionId, fromSectionName, toSectionId, toSectionName, studentsToTransfer, reason, yearLevel, priority]
+
+    OverflowSuggestionsResponse:
+      type: object
+      properties:
+        overflowSections:
+          type: array
+          items:
+            $ref: "#/components/schemas/Section"
+        suggestions:
+          type: array
+          items:
+            $ref: "#/components/schemas/SectionTransferSuggestion"
+        summary:
+          type: string
+        generatedAt:
+          type: string
+      required: [overflowSections, suggestions, summary, generatedAt]
 
     FacultySpecialization:
       type: object

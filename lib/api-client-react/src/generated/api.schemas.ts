@@ -419,8 +419,10 @@ export interface Section {
   name: string;
   yearLevelId: number;
   capacity: number;
+  enrolledCount: number;
   adviserId?: number;
   createdAt: string;
+  updatedAt?: string;
 }
 
 export interface YearLevel {
@@ -444,6 +446,40 @@ export interface UpdateYearLevelBody {
   name?: string;
   description?: string;
   sectionCount?: number;
+}
+
+export interface UpdateSectionBody {
+  name?: string;
+  capacity?: number;
+  enrolledCount?: number;
+  adviserId?: number;
+}
+
+export type SectionTransferSuggestionPriority =
+  (typeof SectionTransferSuggestionPriority)[keyof typeof SectionTransferSuggestionPriority];
+
+export const SectionTransferSuggestionPriority = {
+  high: "high",
+  medium: "medium",
+  low: "low",
+} as const;
+
+export interface SectionTransferSuggestion {
+  fromSectionId: number;
+  fromSectionName: string;
+  toSectionId: number;
+  toSectionName: string;
+  studentsToTransfer: number;
+  reason: string;
+  yearLevel: string;
+  priority: SectionTransferSuggestionPriority;
+}
+
+export interface OverflowSuggestionsResponse {
+  overflowSections: Section[];
+  suggestions: SectionTransferSuggestion[];
+  summary: string;
+  generatedAt: string;
 }
 
 export interface FacultySpecialization {

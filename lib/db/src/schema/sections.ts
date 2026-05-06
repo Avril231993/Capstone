@@ -8,6 +8,7 @@ export const sectionsTable = pgTable("sections", {
   name: text("name").notNull(),
   yearLevelId: integer("year_level_id").notNull().references(() => yearLevelsTable.id, { onDelete: "cascade" }),
   capacity: integer("capacity").notNull().default(40),
+  enrolledCount: integer("enrolled_count").notNull().default(0),
   adviserId: integer("adviser_id"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow().$onUpdate(() => new Date()),

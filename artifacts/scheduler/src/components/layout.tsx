@@ -14,6 +14,7 @@ import {
   Archive,
   GraduationCap,
   FileText,
+  ClipboardList,
 } from "lucide-react";
 import {
   Sidebar,
@@ -58,6 +59,7 @@ const navGroups = [
     items: [
       { title: "School Years", url: "/school-years", icon: Archive },
       { title: "Year Levels & Sections", url: "/year-levels", icon: GraduationCap },
+      { title: "Enrollment Management", url: "/enrollment", icon: ClipboardList },
       { title: "Letter of Intent (LOI)", url: "/loi", icon: FileText },
     ],
   },

@@ -893,8 +893,10 @@ export const ListYearLevelsResponseItem = zod.object({
         name: zod.string(),
         yearLevelId: zod.number(),
         capacity: zod.number(),
+        enrolledCount: zod.number(),
         adviserId: zod.number().optional(),
         createdAt: zod.string(),
+        updatedAt: zod.string().optional(),
       }),
     )
     .optional(),
@@ -938,8 +940,10 @@ export const UpdateYearLevelResponse = zod.object({
         name: zod.string(),
         yearLevelId: zod.number(),
         capacity: zod.number(),
+        enrolledCount: zod.number(),
         adviserId: zod.number().optional(),
         createdAt: zod.string(),
+        updatedAt: zod.string().optional(),
       }),
     )
     .optional(),
@@ -950,6 +954,78 @@ export const UpdateYearLevelResponse = zod.object({
  */
 export const DeleteYearLevelParams = zod.object({
   id: zod.coerce.number(),
+});
+
+/**
+ * @summary List all sections across all year levels
+ */
+export const ListSectionsResponseItem = zod.object({
+  id: zod.number(),
+  name: zod.string(),
+  yearLevelId: zod.number(),
+  capacity: zod.number(),
+  enrolledCount: zod.number(),
+  adviserId: zod.number().optional(),
+  createdAt: zod.string(),
+  updatedAt: zod.string().optional(),
+});
+export const ListSectionsResponse = zod.array(ListSectionsResponseItem);
+
+/**
+ * @summary Update a section (name, capacity, enrolled count)
+ */
+export const UpdateSectionParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const UpdateSectionBody = zod.object({
+  name: zod.string().optional(),
+  capacity: zod.number().optional(),
+  enrolledCount: zod.number().optional(),
+  adviserId: zod.number().optional(),
+});
+
+export const UpdateSectionResponse = zod.object({
+  id: zod.number(),
+  name: zod.string(),
+  yearLevelId: zod.number(),
+  capacity: zod.number(),
+  enrolledCount: zod.number(),
+  adviserId: zod.number().optional(),
+  createdAt: zod.string(),
+  updatedAt: zod.string().optional(),
+});
+
+/**
+ * @summary Get AI suggestions for transferring students from overflowed sections
+ */
+export const GetOverflowSuggestionsResponse = zod.object({
+  overflowSections: zod.array(
+    zod.object({
+      id: zod.number(),
+      name: zod.string(),
+      yearLevelId: zod.number(),
+      capacity: zod.number(),
+      enrolledCount: zod.number(),
+      adviserId: zod.number().optional(),
+      createdAt: zod.string(),
+      updatedAt: zod.string().optional(),
+    }),
+  ),
+  suggestions: zod.array(
+    zod.object({
+      fromSectionId: zod.number(),
+      fromSectionName: zod.string(),
+      toSectionId: zod.number(),
+      toSectionName: zod.string(),
+      studentsToTransfer: zod.number(),
+      reason: zod.string(),
+      yearLevel: zod.string(),
+      priority: zod.enum(["high", "medium", "low"]),
+    }),
+  ),
+  summary: zod.string(),
+  generatedAt: zod.string(),
 });
 
 /**

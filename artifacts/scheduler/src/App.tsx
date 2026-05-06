@@ -16,6 +16,7 @@ import Conflicts from "@/pages/conflicts";
 import SchoolYears from "@/pages/school-years";
 import YearLevels from "@/pages/year-levels";
 import LoiPage from "@/pages/loi";
+import Enrollment from "@/pages/enrollment";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient({
@@ -47,6 +48,7 @@ function Router() {
         <Route path="/school-years" component={SchoolYears} />
         <Route path="/year-levels" component={YearLevels} />
         <Route path="/loi" component={LoiPage} />
+        <Route path="/enrollment" component={Enrollment} />
         <Route component={NotFound} />
       </Switch>
     </Layout>

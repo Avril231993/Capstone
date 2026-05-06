@@ -49,12 +49,14 @@ import type {
   ListSchedulesParams,
   LoiDocument,
   LoiExtractionResult,
+  OverflowSuggestionsResponse,
   OverviewStats,
   ProcessLoiBody,
   Room,
   RoomUtilizationReport,
   ScheduleEntry,
   SchoolYear,
+  Section,
   SuggestionsRequestBody,
   SuggestionsResponse,
   Timeslot,
@@ -62,6 +64,7 @@ import type {
   UpdateFacultyBody,
   UpdateRoomBody,
   UpdateScheduleBody,
+  UpdateSectionBody,
   UpdateYearLevelBody,
   YearLevel,
 } from "./api.schemas";
@@ -3353,6 +3356,252 @@ export const useDeleteYearLevel = <
   TContext
 > => {
   return useMutation(getDeleteYearLevelMutationOptions(options));
+};
+
+/**
+ * @summary List all sections across all year levels
+ */
+export const getListSectionsUrl = () => {
+  return `/api/sections`;
+};
+
+export const listSections = async (
+  options?: RequestInit,
+): Promise<Section[]> => {
+  return customFetch<Section[]>(getListSectionsUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getListSectionsQueryKey = () => {
+  return [`/api/sections`] as const;
+};
+
+export const getListSectionsQueryOptions = <
+  TData = Awaited<ReturnType<typeof listSections>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof listSections>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListSectionsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listSections>>> = ({
+    signal,
+  }) => listSections({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listSections>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type ListSectionsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listSections>>
+>;
+export type ListSectionsQueryError = ErrorType<unknown>;
+
+/**
+ * @summary List all sections across all year levels
+ */
+
+export function useListSections<
+  TData = Awaited<ReturnType<typeof listSections>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof listSections>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getListSectionsQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Update a section (name, capacity, enrolled count)
+ */
+export const getUpdateSectionUrl = (id: number) => {
+  return `/api/sections/${id}`;
+};
+
+export const updateSection = async (
+  id: number,
+  updateSectionBody: UpdateSectionBody,
+  options?: RequestInit,
+): Promise<Section> => {
+  return customFetch<Section>(getUpdateSectionUrl(id), {
+    ...options,
+    method: "PUT",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(updateSectionBody),
+  });
+};
+
+export const getUpdateSectionMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateSection>>,
+    TError,
+    { id: number; data: BodyType<UpdateSectionBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateSection>>,
+  TError,
+  { id: number; data: BodyType<UpdateSectionBody> },
+  TContext
+> => {
+  const mutationKey = ["updateSection"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateSection>>,
+    { id: number; data: BodyType<UpdateSectionBody> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return updateSection(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateSectionMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateSection>>
+>;
+export type UpdateSectionMutationBody = BodyType<UpdateSectionBody>;
+export type UpdateSectionMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Update a section (name, capacity, enrolled count)
+ */
+export const useUpdateSection = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateSection>>,
+    TError,
+    { id: number; data: BodyType<UpdateSectionBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof updateSection>>,
+  TError,
+  { id: number; data: BodyType<UpdateSectionBody> },
+  TContext
+> => {
+  return useMutation(getUpdateSectionMutationOptions(options));
+};
+
+/**
+ * @summary Get AI suggestions for transferring students from overflowed sections
+ */
+export const getGetOverflowSuggestionsUrl = () => {
+  return `/api/sections/overflow-suggestions`;
+};
+
+export const getOverflowSuggestions = async (
+  options?: RequestInit,
+): Promise<OverflowSuggestionsResponse> => {
+  return customFetch<OverflowSuggestionsResponse>(
+    getGetOverflowSuggestionsUrl(),
+    {
+      ...options,
+      method: "POST",
+    },
+  );
+};
+
+export const getGetOverflowSuggestionsMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof getOverflowSuggestions>>,
+    TError,
+    void,
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof getOverflowSuggestions>>,
+  TError,
+  void,
+  TContext
+> => {
+  const mutationKey = ["getOverflowSuggestions"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof getOverflowSuggestions>>,
+    void
+  > = () => {
+    return getOverflowSuggestions(requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type GetOverflowSuggestionsMutationResult = NonNullable<
+  Awaited<ReturnType<typeof getOverflowSuggestions>>
+>;
+
+export type GetOverflowSuggestionsMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Get AI suggestions for transferring students from overflowed sections
+ */
+export const useGetOverflowSuggestions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof getOverflowSuggestions>>,
+    TError,
+    void,
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof getOverflowSuggestions>>,
+  TError,
+  void,
+  TContext
+> => {
+  return useMutation(getGetOverflowSuggestionsMutationOptions(options));
 };
 
 /**
