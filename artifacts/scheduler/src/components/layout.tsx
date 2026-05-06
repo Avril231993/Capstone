@@ -11,6 +11,9 @@ import {
   Lightbulb,
   AlertTriangle,
   CalendarCog,
+  Archive,
+  GraduationCap,
+  FileText,
 } from "lucide-react";
 import {
   Sidebar,
@@ -25,17 +28,45 @@ import {
   SidebarHeader
 } from "@/components/ui/sidebar";
 
-const navItems = [
-  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
-  { title: "Timetable", url: "/timetable", icon: CalendarDays },
-  { title: "Schedule Builder", url: "/schedule-builder", icon: CalendarCog },
-  { title: "Courses", url: "/courses", icon: BookOpen },
-  { title: "Faculty", url: "/faculty", icon: Users },
-  { title: "Rooms", url: "/rooms", icon: DoorOpen },
-  { title: "Schedule", url: "/schedule", icon: CalendarPlus },
-  { title: "Reports", url: "/reports", icon: FileBarChart },
-  { title: "AI Suggestions", url: "/ai-suggestions", icon: Lightbulb },
-  { title: "Conflicts", url: "/conflicts", icon: AlertTriangle },
+const navGroups = [
+  {
+    label: "Overview",
+    items: [
+      { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
+      { title: "Timetable", url: "/timetable", icon: CalendarDays },
+    ],
+  },
+  {
+    label: "Scheduling",
+    items: [
+      { title: "Schedule Builder", url: "/schedule-builder", icon: CalendarCog },
+      { title: "Schedule", url: "/schedule", icon: CalendarPlus },
+      { title: "Conflicts", url: "/conflicts", icon: AlertTriangle },
+      { title: "AI Suggestions", url: "/ai-suggestions", icon: Lightbulb },
+    ],
+  },
+  {
+    label: "Resources",
+    items: [
+      { title: "Courses", url: "/courses", icon: BookOpen },
+      { title: "Faculty", url: "/faculty", icon: Users },
+      { title: "Rooms", url: "/rooms", icon: DoorOpen },
+    ],
+  },
+  {
+    label: "Organization",
+    items: [
+      { title: "School Years", url: "/school-years", icon: Archive },
+      { title: "Year Levels & Sections", url: "/year-levels", icon: GraduationCap },
+      { title: "Letter of Intent (LOI)", url: "/loi", icon: FileText },
+    ],
+  },
+  {
+    label: "Analytics",
+    items: [
+      { title: "Reports", url: "/reports", icon: FileBarChart },
+    ],
+  },
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -54,23 +85,25 @@ export function Layout({ children }: { children: React.ReactNode }) {
             </div>
           </SidebarHeader>
           <SidebarContent>
-            <SidebarGroup>
-              <SidebarGroupLabel>Menu</SidebarGroupLabel>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  {navItems.map((item) => (
-                    <SidebarMenuItem key={item.title}>
-                      <SidebarMenuButton asChild isActive={location === item.url} tooltip={item.title}>
-                        <Link href={item.url} className="flex items-center gap-3 w-full">
-                          <item.icon className="h-4 w-4" />
-                          <span>{item.title}</span>
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  ))}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
+            {navGroups.map((group) => (
+              <SidebarGroup key={group.label}>
+                <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
+                <SidebarGroupContent>
+                  <SidebarMenu>
+                    {group.items.map((item) => (
+                      <SidebarMenuItem key={item.title}>
+                        <SidebarMenuButton asChild isActive={location === item.url} tooltip={item.title}>
+                          <Link href={item.url} className="flex items-center gap-3 w-full">
+                            <item.icon className="h-4 w-4" />
+                            <span>{item.title}</span>
+                          </Link>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    ))}
+                  </SidebarMenu>
+                </SidebarGroupContent>
+              </SidebarGroup>
+            ))}
           </SidebarContent>
         </Sidebar>
         <main className="flex-1 flex flex-col min-w-0">

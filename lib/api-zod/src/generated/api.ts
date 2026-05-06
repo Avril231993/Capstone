@@ -835,3 +835,245 @@ export const GetRoomUtilizationResponseItem = zod.object({
 export const GetRoomUtilizationResponse = zod.array(
   GetRoomUtilizationResponseItem,
 );
+
+/**
+ * @summary List all school years
+ */
+export const ListSchoolYearsResponseItem = zod.object({
+  id: zod.number(),
+  name: zod.string(),
+  status: zod.enum(["active", "archived"]),
+  startDate: zod.string().optional(),
+  endDate: zod.string().optional(),
+  archivedAt: zod.string().optional(),
+  createdAt: zod.string(),
+});
+export const ListSchoolYearsResponse = zod.array(ListSchoolYearsResponseItem);
+
+/**
+ * @summary Create a new school year
+ */
+export const CreateSchoolYearBody = zod.object({
+  name: zod.string(),
+  startDate: zod.string().optional(),
+  endDate: zod.string().optional(),
+});
+
+/**
+ * @summary Archive a school year and initialize a new one
+ */
+export const ArchiveSchoolYearBody = zod.object({
+  schoolYearId: zod.number(),
+  newSchoolYearName: zod.string(),
+});
+
+export const ArchiveSchoolYearResponse = zod.object({}).passthrough();
+
+/**
+ * @summary Delete a school year
+ */
+export const DeleteSchoolYearParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+/**
+ * @summary List all year levels with their sections
+ */
+export const ListYearLevelsResponseItem = zod.object({
+  id: zod.number(),
+  name: zod.string(),
+  description: zod.string().optional(),
+  sectionCount: zod.number(),
+  schoolYearId: zod.number().optional(),
+  createdAt: zod.string(),
+  sections: zod
+    .array(
+      zod.object({
+        id: zod.number(),
+        name: zod.string(),
+        yearLevelId: zod.number(),
+        capacity: zod.number(),
+        adviserId: zod.number().optional(),
+        createdAt: zod.string(),
+      }),
+    )
+    .optional(),
+});
+export const ListYearLevelsResponse = zod.array(ListYearLevelsResponseItem);
+
+/**
+ * @summary Create a year level and auto-generate sections
+ */
+export const CreateYearLevelBody = zod.object({
+  name: zod.string(),
+  description: zod.string().optional(),
+  sectionCount: zod.number(),
+  schoolYearId: zod.number().optional(),
+});
+
+/**
+ * @summary Update a year level
+ */
+export const UpdateYearLevelParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const UpdateYearLevelBody = zod.object({
+  name: zod.string().optional(),
+  description: zod.string().optional(),
+  sectionCount: zod.number().optional(),
+});
+
+export const UpdateYearLevelResponse = zod.object({
+  id: zod.number(),
+  name: zod.string(),
+  description: zod.string().optional(),
+  sectionCount: zod.number(),
+  schoolYearId: zod.number().optional(),
+  createdAt: zod.string(),
+  sections: zod
+    .array(
+      zod.object({
+        id: zod.number(),
+        name: zod.string(),
+        yearLevelId: zod.number(),
+        capacity: zod.number(),
+        adviserId: zod.number().optional(),
+        createdAt: zod.string(),
+      }),
+    )
+    .optional(),
+});
+
+/**
+ * @summary Delete a year level (cascades sections)
+ */
+export const DeleteYearLevelParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+/**
+ * @summary List specializations for a faculty member
+ */
+export const ListFacultySpecializationsParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const ListFacultySpecializationsResponseItem = zod.object({
+  id: zod.number(),
+  facultyId: zod.number(),
+  subjectArea: zod.string(),
+  isPrimary: zod.boolean(),
+  yearsExperience: zod.number().optional(),
+  createdAt: zod.string(),
+});
+export const ListFacultySpecializationsResponse = zod.array(
+  ListFacultySpecializationsResponseItem,
+);
+
+/**
+ * @summary Add a specialization to a faculty member
+ */
+export const AddFacultySpecializationParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const AddFacultySpecializationBody = zod.object({
+  subjectArea: zod.string(),
+  isPrimary: zod.boolean().optional(),
+  yearsExperience: zod.number().optional(),
+});
+
+/**
+ * @summary Remove a specialization from a faculty member
+ */
+export const DeleteFacultySpecializationParams = zod.object({
+  id: zod.coerce.number(),
+  specId: zod.coerce.number(),
+});
+
+/**
+ * @summary Get availability for a faculty member
+ */
+export const GetFacultyAvailabilityParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const GetFacultyAvailabilityResponseItem = zod.object({
+  id: zod.number(),
+  facultyId: zod.number(),
+  day: zod.string(),
+  timeOfDay: zod.enum(["Morning", "Afternoon", "Evening"]),
+  isAvailable: zod.boolean(),
+  employmentType: zod.enum(["full_time", "part_time"]),
+  sourceLoiId: zod.number().optional(),
+  createdAt: zod.string(),
+});
+export const GetFacultyAvailabilityResponse = zod.array(
+  GetFacultyAvailabilityResponseItem,
+);
+
+/**
+ * @summary List all LOI documents
+ */
+export const ListLoiDocumentsResponseItem = zod.object({
+  id: zod.number(),
+  facultyId: zod.number().optional(),
+  originalText: zod.string(),
+  fileName: zod.string().optional(),
+  status: zod.enum(["pending", "processing", "processed", "failed"]),
+  extractedData: zod.object({}).passthrough().optional(),
+  processingError: zod.string().optional(),
+  createdAt: zod.string(),
+});
+export const ListLoiDocumentsResponse = zod.array(ListLoiDocumentsResponseItem);
+
+/**
+ * @summary Process a Letter of Intent using AI extraction
+ */
+export const ProcessLoiBody = zod.object({
+  facultyId: zod.number().optional(),
+  text: zod.string(),
+  fileName: zod.string().optional(),
+});
+
+export const ProcessLoiResponse = zod.object({
+  loiId: zod.number(),
+  extractedData: zod.object({}).passthrough(),
+  autoApplied: zod.boolean(),
+  message: zod.string(),
+});
+
+/**
+ * @summary Get a specific LOI document
+ */
+export const GetLoiDocumentParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const GetLoiDocumentResponse = zod.object({
+  id: zod.number(),
+  facultyId: zod.number().optional(),
+  originalText: zod.string(),
+  fileName: zod.string().optional(),
+  status: zod.enum(["pending", "processing", "processed", "failed"]),
+  extractedData: zod.object({}).passthrough().optional(),
+  processingError: zod.string().optional(),
+  createdAt: zod.string(),
+});
+
+/**
+ * @summary Delete an LOI document
+ */
+export const DeleteLoiDocumentParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+/**
+ * @summary Apply extracted LOI data to update faculty profile
+ */
+export const ApplyLoiExtractionParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const ApplyLoiExtractionResponse = zod.object({}).passthrough();

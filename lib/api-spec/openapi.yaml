@@ -21,6 +21,16 @@ tags:
     description: Schedule management
   - name: stats
     description: Dashboard statistics and reports
+  - name: school-years
+    description: School year lifecycle management
+  - name: year-levels
+    description: Year level and section management
+  - name: sections
+    description: Section management
+  - name: loi
+    description: Letter of Intent processing
+  - name: faculty-specializations
+    description: Faculty specialization management
 
 paths:
   /healthz:
@@ -656,6 +666,310 @@ paths:
                 items:
                   $ref: "#/components/schemas/RoomUtilizationReport"
 
+  /school-years:
+    get:
+      operationId: listSchoolYears
+      tags: [school-years]
+      summary: List all school years
+      responses:
+        "200":
+          description: List of school years
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SchoolYear"
+    post:
+      operationId: createSchoolYear
+      tags: [school-years]
+      summary: Create a new school year
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSchoolYearBody"
+      responses:
+        "201":
+          description: Created school year
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SchoolYear"
+
+  /school-years/archive:
+    post:
+      operationId: archiveSchoolYear
+      tags: [school-years]
+      summary: Archive a school year and initialize a new one
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ArchiveSchoolYearBody"
+      responses:
+        "200":
+          description: Archive result
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /school-years/{id}:
+    delete:
+      operationId: deleteSchoolYear
+      tags: [school-years]
+      summary: Delete a school year
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /year-levels:
+    get:
+      operationId: listYearLevels
+      tags: [year-levels]
+      summary: List all year levels with their sections
+      responses:
+        "200":
+          description: List of year levels
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/YearLevel"
+    post:
+      operationId: createYearLevel
+      tags: [year-levels]
+      summary: Create a year level and auto-generate sections
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateYearLevelBody"
+      responses:
+        "201":
+          description: Created year level with sections
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/YearLevel"
+
+  /year-levels/{id}:
+    put:
+      operationId: updateYearLevel
+      tags: [year-levels]
+      summary: Update a year level
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateYearLevelBody"
+      responses:
+        "200":
+          description: Updated year level
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/YearLevel"
+    delete:
+      operationId: deleteYearLevel
+      tags: [year-levels]
+      summary: Delete a year level (cascades sections)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /faculty/{id}/specializations:
+    get:
+      operationId: listFacultySpecializations
+      tags: [faculty-specializations]
+      summary: List specializations for a faculty member
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Specializations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FacultySpecialization"
+    post:
+      operationId: addFacultySpecialization
+      tags: [faculty-specializations]
+      summary: Add a specialization to a faculty member
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateFacultySpecializationBody"
+      responses:
+        "201":
+          description: Created specialization
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FacultySpecialization"
+
+  /faculty/{id}/specializations/{specId}:
+    delete:
+      operationId: deleteFacultySpecialization
+      tags: [faculty-specializations]
+      summary: Remove a specialization from a faculty member
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: specId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /faculty/{id}/availability:
+    get:
+      operationId: getFacultyAvailability
+      tags: [faculty-specializations]
+      summary: Get availability for a faculty member
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Availability records
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FacultyAvailability"
+
+  /loi:
+    get:
+      operationId: listLoiDocuments
+      tags: [loi]
+      summary: List all LOI documents
+      responses:
+        "200":
+          description: LOI documents
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LoiDocument"
+    post:
+      operationId: processLoi
+      tags: [loi]
+      summary: Process a Letter of Intent using AI extraction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProcessLoiBody"
+      responses:
+        "200":
+          description: Extraction result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoiExtractionResult"
+
+  /loi/{id}:
+    get:
+      operationId: getLoiDocument
+      tags: [loi]
+      summary: Get a specific LOI document
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: LOI document
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoiDocument"
+    delete:
+      operationId: deleteLoiDocument
+      tags: [loi]
+      summary: Delete an LOI document
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /loi/{id}/apply:
+    post:
+      operationId: applyLoiExtraction
+      tags: [loi]
+      summary: Apply extracted LOI data to update faculty profile
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Application result
+          content:
+            application/json:
+              schema:
+                type: object
+
 components:
   schemas:
     HealthStatus:
@@ -1145,3 +1459,201 @@ components:
           utilizationRate,
           status,
         ]
+
+    SchoolYear:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        status:
+          type: string
+          enum: [active, archived]
+        startDate:
+          type: string
+        endDate:
+          type: string
+        archivedAt:
+          type: string
+        createdAt:
+          type: string
+      required: [id, name, status, createdAt]
+
+    CreateSchoolYearBody:
+      type: object
+      properties:
+        name:
+          type: string
+        startDate:
+          type: string
+        endDate:
+          type: string
+      required: [name]
+
+    ArchiveSchoolYearBody:
+      type: object
+      properties:
+        schoolYearId:
+          type: integer
+        newSchoolYearName:
+          type: string
+      required: [schoolYearId, newSchoolYearName]
+
+    YearLevel:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        sectionCount:
+          type: integer
+        schoolYearId:
+          type: integer
+        createdAt:
+          type: string
+        sections:
+          type: array
+          items:
+            $ref: "#/components/schemas/Section"
+      required: [id, name, sectionCount, createdAt]
+
+    CreateYearLevelBody:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        sectionCount:
+          type: integer
+        schoolYearId:
+          type: integer
+      required: [name, sectionCount]
+
+    UpdateYearLevelBody:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        sectionCount:
+          type: integer
+
+    Section:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        yearLevelId:
+          type: integer
+        capacity:
+          type: integer
+        adviserId:
+          type: integer
+        createdAt:
+          type: string
+      required: [id, name, yearLevelId, capacity, createdAt]
+
+    FacultySpecialization:
+      type: object
+      properties:
+        id:
+          type: integer
+        facultyId:
+          type: integer
+        subjectArea:
+          type: string
+        isPrimary:
+          type: boolean
+        yearsExperience:
+          type: integer
+        createdAt:
+          type: string
+      required: [id, facultyId, subjectArea, isPrimary, createdAt]
+
+    CreateFacultySpecializationBody:
+      type: object
+      properties:
+        subjectArea:
+          type: string
+        isPrimary:
+          type: boolean
+        yearsExperience:
+          type: integer
+      required: [subjectArea]
+
+    FacultyAvailability:
+      type: object
+      properties:
+        id:
+          type: integer
+        facultyId:
+          type: integer
+        day:
+          type: string
+        timeOfDay:
+          type: string
+          enum: [Morning, Afternoon, Evening]
+        isAvailable:
+          type: boolean
+        employmentType:
+          type: string
+          enum: [full_time, part_time]
+        sourceLoiId:
+          type: integer
+        createdAt:
+          type: string
+      required: [id, facultyId, day, timeOfDay, isAvailable, employmentType, createdAt]
+
+    LoiDocument:
+      type: object
+      properties:
+        id:
+          type: integer
+        facultyId:
+          type: integer
+        originalText:
+          type: string
+        fileName:
+          type: string
+        status:
+          type: string
+          enum: [pending, processing, processed, failed]
+        extractedData:
+          type: object
+        processingError:
+          type: string
+        createdAt:
+          type: string
+      required: [id, originalText, status, createdAt]
+
+    ProcessLoiBody:
+      type: object
+      properties:
+        facultyId:
+          type: integer
+        text:
+          type: string
+        fileName:
+          type: string
+      required: [text]
+
+    LoiExtractionResult:
+      type: object
+      properties:
+        loiId:
+          type: integer
+        extractedData:
+          type: object
+        autoApplied:
+          type: boolean
+        message:
+          type: string
+      required: [loiId, extractedData, autoApplied, message]

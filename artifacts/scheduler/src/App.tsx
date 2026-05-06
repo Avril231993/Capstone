@@ -13,6 +13,9 @@ import Schedule from "@/pages/schedule";
 import Reports from "@/pages/reports";
 import AiSuggestions from "@/pages/ai-suggestions";
 import Conflicts from "@/pages/conflicts";
+import SchoolYears from "@/pages/school-years";
+import YearLevels from "@/pages/year-levels";
+import LoiPage from "@/pages/loi";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient({
@@ -41,6 +44,9 @@ function Router() {
         <Route path="/reports" component={Reports} />
         <Route path="/ai-suggestions" component={AiSuggestions} />
         <Route path="/conflicts" component={Conflicts} />
+        <Route path="/school-years" component={SchoolYears} />
+        <Route path="/year-levels" component={YearLevels} />
+        <Route path="/loi" component={LoiPage} />
         <Route component={NotFound} />
       </Switch>
     </Layout>

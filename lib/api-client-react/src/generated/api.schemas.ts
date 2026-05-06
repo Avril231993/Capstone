@@ -385,6 +385,148 @@ export interface RoomUtilizationReport {
   status: RoomUtilizationReportStatus;
 }
 
+export type SchoolYearStatus =
+  (typeof SchoolYearStatus)[keyof typeof SchoolYearStatus];
+
+export const SchoolYearStatus = {
+  active: "active",
+  archived: "archived",
+} as const;
+
+export interface SchoolYear {
+  id: number;
+  name: string;
+  status: SchoolYearStatus;
+  startDate?: string;
+  endDate?: string;
+  archivedAt?: string;
+  createdAt: string;
+}
+
+export interface CreateSchoolYearBody {
+  name: string;
+  startDate?: string;
+  endDate?: string;
+}
+
+export interface ArchiveSchoolYearBody {
+  schoolYearId: number;
+  newSchoolYearName: string;
+}
+
+export interface Section {
+  id: number;
+  name: string;
+  yearLevelId: number;
+  capacity: number;
+  adviserId?: number;
+  createdAt: string;
+}
+
+export interface YearLevel {
+  id: number;
+  name: string;
+  description?: string;
+  sectionCount: number;
+  schoolYearId?: number;
+  createdAt: string;
+  sections?: Section[];
+}
+
+export interface CreateYearLevelBody {
+  name: string;
+  description?: string;
+  sectionCount: number;
+  schoolYearId?: number;
+}
+
+export interface UpdateYearLevelBody {
+  name?: string;
+  description?: string;
+  sectionCount?: number;
+}
+
+export interface FacultySpecialization {
+  id: number;
+  facultyId: number;
+  subjectArea: string;
+  isPrimary: boolean;
+  yearsExperience?: number;
+  createdAt: string;
+}
+
+export interface CreateFacultySpecializationBody {
+  subjectArea: string;
+  isPrimary?: boolean;
+  yearsExperience?: number;
+}
+
+export type FacultyAvailabilityTimeOfDay =
+  (typeof FacultyAvailabilityTimeOfDay)[keyof typeof FacultyAvailabilityTimeOfDay];
+
+export const FacultyAvailabilityTimeOfDay = {
+  Morning: "Morning",
+  Afternoon: "Afternoon",
+  Evening: "Evening",
+} as const;
+
+export type FacultyAvailabilityEmploymentType =
+  (typeof FacultyAvailabilityEmploymentType)[keyof typeof FacultyAvailabilityEmploymentType];
+
+export const FacultyAvailabilityEmploymentType = {
+  full_time: "full_time",
+  part_time: "part_time",
+} as const;
+
+export interface FacultyAvailability {
+  id: number;
+  facultyId: number;
+  day: string;
+  timeOfDay: FacultyAvailabilityTimeOfDay;
+  isAvailable: boolean;
+  employmentType: FacultyAvailabilityEmploymentType;
+  sourceLoiId?: number;
+  createdAt: string;
+}
+
+export type LoiDocumentStatus =
+  (typeof LoiDocumentStatus)[keyof typeof LoiDocumentStatus];
+
+export const LoiDocumentStatus = {
+  pending: "pending",
+  processing: "processing",
+  processed: "processed",
+  failed: "failed",
+} as const;
+
+export type LoiDocumentExtractedData = { [key: string]: unknown };
+
+export interface LoiDocument {
+  id: number;
+  facultyId?: number;
+  originalText: string;
+  fileName?: string;
+  status: LoiDocumentStatus;
+  extractedData?: LoiDocumentExtractedData;
+  processingError?: string;
+  createdAt: string;
+}
+
+export interface ProcessLoiBody {
+  facultyId?: number;
+  text: string;
+  fileName?: string;
+}
+
+export type LoiExtractionResultExtractedData = { [key: string]: unknown };
+
+export interface LoiExtractionResult {
+  loiId: number;
+  extractedData: LoiExtractionResultExtractedData;
+  autoApplied: boolean;
+  message: string;
+}
+
 export type ListCoursesParams = {
   department?: string;
   search?: string;
@@ -437,3 +579,7 @@ export type GetRoomUtilizationParams = {
   semester?: string;
   academicYear?: string;
 };
+
+export type ArchiveSchoolYear200 = { [key: string]: unknown };
+
+export type ApplyLoiExtraction200 = { [key: string]: unknown };

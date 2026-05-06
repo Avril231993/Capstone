@@ -1,0 +1,122 @@
+adding intelligent automation, structured data handling, and school-year lifecycle management.
+1. Teacher Letter of Intent (LOI) Integration
+Objective
+Enable the system to process and utilize teacher-submitted Letters of Intent (LOI) for scheduling and profiling.
+Core Features
+Allow teachers to upload LOI documents
+Store files securely and associate them with teacher profiles
+Automatically extract structured data from the LOI (see Section 6)
+2. Teacher Profile & Specialization Enhancement
+Extend the existing teacher module to support:
+Multiple specializations per teacher
+Availability derived from LOI
+Allow administrators to:
+Review and edit extracted data
+Manage teacher specializations dynamically
+3. Section & Year Level Management
+Enable admins to:
+Define year levels (e.g., Grade 7, Grade 8)
+Input the number of sections per year level
+The system should dynamically generate sections based on this configuration.
+4. Automated Scheduling System Enhancement
+Objective
+Upgrade the current scheduling engine to be fully automated and constraint-based.
+Scheduling Inputs
+Teacher availability (from LOI)
+Teacher specialization(s)
+Number of sections per year level
+Constraints
+No teacher time conflicts
+Assign subjects only within teacher specialization
+Balanced workload distribution
+5. Smart Scheduling Logic
+Prioritize:
+Teacher specialization alignment
+Preferred schedules from LOI
+Implement fallback logic:
+Assign next available qualified teacher when no exact match exists
+Ensure scalability and efficiency for large datasets
+6. AI-Powered LOI Data Extraction Module
+Role and Objective
+You are an expert Data Extraction Assistant. Extract structured data from teacher LOIs for system use.
+Document Context
+Typical LOI contains:
+Statement:
+"I, [Teacher Name], with specialization in [Specialization]..."
+School year (e.g., 2026-2027)
+Availability table with:
+Time slots: Morning, Afternoon, Evening
+Categories:
+FULL TIME → Mon/Thur, Tue/Fri, Wed/Sat
+PART-TIME → Sat, Sun, M, T, W, Th, F
+OCR Handling Rules
+Treat the following as available (true):
+✔, X, YES
+Any visible mark
+Image placeholders (e.g., [Image 1])
+Extraction Rules
+Teacher Profile
+Name: between "I, " and ", with specialization"
+Specialization: between "specialization in " and "and presently teaching"
+School Year: explicitly stated academic year
+Availability Mapping
+Map marked cells to:
+time_of_day (Morning / Afternoon / Evening)
+days (column label)
+Determine:
+Full-Time → marks under FULL TIME columns
+Part-Time → marks under PART-TIME columns
+Strict JSON Output
+{
+  "teacher_profile": {
+    "name": "Extracted Name Here",
+    "specialization": "Extracted Specialization Here",
+    "target_school_year": "Extracted School Year"
+  },
+  "availability": {
+    "status": "Full-Time or Part-Time",
+    "schedule": [
+      {
+        "time_of_day": "Morning | Afternoon | Evening",
+        "days": "e.g., Mon/Thur or M or Sat",
+        "is_available": true
+      }
+    ]
+  }
+}
+Missing Data Rule
+Use null if data is not found
+Do not guess values
+7. School Year Archiving & Auto-Reset System
+Objective
+Implement lifecycle management of academic records.
+Functionality
+At the end of each school year:
+Automatically archive all records into a folder:
+Format: YYYY-YYYY (e.g., 2025-2026)
+System should:
+Initialize a new active school year (e.g., 2026-2027)
+Reset operational data while preserving history
+Data Handling
+Archived data:
+Read-only
+Accessible for reporting
+Active data:
+Fully editable
+Trigger Options
+Manual (admin-triggered)
+Automatic (date/config-based)
+8. System Integration Requirements
+All enhancements must:
+Integrate with the existing system architecture
+Maintain backward compatibility
+Ensure data integrity and consistency
+9. Output & Reporting
+Generate:
+Teacher schedules
+Section schedules
+Exportable reports (PDF/Excel)
+Ensure outputs reflect:
+Availability
+Specialization
+Section distribution
